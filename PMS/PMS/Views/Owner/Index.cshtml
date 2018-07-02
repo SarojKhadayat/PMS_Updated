@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    // string test = "test";
+}
+<form style="margin-top: 30px">
+    <input type="text" class="text_box" placeholder="owner name here.." id="ownername" />
+    <input type="text" class="text_box" placeholder="owner address here.." id="owneraddress" />
+    <input type="text" class="text_box" placeholder="phone number here.." id="phonenumber" />
+    <label class="text_box">Is Active</label> <input type="checkbox" id="isactive" />
+    <input type="button" class="btn btn-primary" value="submit" onclick="submitData()">
+
+</form>
+
+<div id="ownerList">
+
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // console.log("Fetching..");
+            getAllOwners();
+        });
+        var submitData = function() {
+            var name = $('#ownername').val();
+            var address = $('#owneraddress').val();
+            var phone = $('#phonenumber').val();
+            var isactive = $('#isactive').is(":checked");
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("Create", "Owner")', //"~/owner/create"
+                data: { name: name, address: address, number: phone, isActive: isactive },
+                contenttype: 'json',
+                datatype: 'html',
+                success: function(response) {
+                    if (response === true) {
+                        getAllOwners();
+                        alert("Data inserted successfully");
+                    } else
+                        alert('not inserted');
+                },
+                error: function() {
+                    alert('errror inserting data');
+                }
+            });
+        }
+        var getAllOwners = function() {
+            $.ajax({
+                type: 'get',
+                url: '@Url.Action("_Index", "Owner")', //"~/owner/create"
+                datatype: 'html',
+                success: function(response) {
+                    //console.log("writing response..");
+                    $("#ownerList").html(response);
+                },
+                error: function() {
+                    alert('errror fetching data');
+                }
+            });
+        }
+
+        function check() {
+            $.ajax({
+            type: 'get',
+                url: '@Url.Action("Create", "Owner")', //"~/owner/create"
+                data: { name: name, address: address, number: phone, isActive: isactive },
+            contenttype: 'json',
+                datatype: 'html',
+                success: function(response) {
+                if (response === true) {
+                    getAllOwners();
+                    alert("Data inserted successfully");
+                } else
+                    alert('not inserted');
+            },
+            error: function() {
+                alert('errror inserting data');
+            }
+        }
+    </script>
+}
+    <style>
+        .text_box {
+            margin-left: 10px;
+        }
+    </style>
